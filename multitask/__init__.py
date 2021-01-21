@@ -13,8 +13,8 @@ else:
 
 # -----------------------------------------------------------------------------
 def imap_unordered_with_tqdm(
-    fun: Callable, args: Iterable, n_cores: int = cpu_count(),
-    desc: Union[str, None]=None
+    fun: Callable, iterable: Iterable, n_cores: int = cpu_count(),
+    chunksize: int = 1, *args, **kwargs
 ) -> list:
     """
     tqdmを使ってimap_unorderedを呼び出す。
@@ -22,19 +22,23 @@ def imap_unordered_with_tqdm(
     Args:
         fun (Callable):
             呼び出す関数。
-        args (Iterable):
+        iterable (Iterable):
             引数。
         n_cores (int, optional):
-            計算に使うコア数。デフォルトはN_CORES。
+            計算に使うコア数。デフォルトはCPU数。
+        chunksize (int, optional):
+            並列計算の分割サイズ。デフォルトは1。
+        args, kwargs:
+            tqdmに渡されるパラメーター。
 
     Returns:
         list: 計算結果。
     """
-    prog_bar = tqdm(total=len(args), desc=desc)
+    prog_bar = tqdm(total=len(iterable), *args, **kwargs)
     pool = Pool(n_cores)
     result = list()
     try:
-        for i in pool.imap_unordered(fun, args):
+        for i in pool.imap_unordered(fun, iterable, chunksize=chunksize):
             result.append(i)
             prog_bar.update(1)
     finally:
