@@ -34,6 +34,8 @@ def imap_unordered_with_tqdm(
     Returns:
         list: 計算結果。
     """
+    if n_cores == 1:
+        return [fun(i) for i in  tqdm(iterable, *args, **kwargs)]
     prog_bar = tqdm(total=len(iterable), *args, **kwargs)
     pool = Pool(n_cores)
     result = list()
