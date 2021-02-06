@@ -11,6 +11,7 @@ if 'ipykernel' in sys.modules:
 else:
     from tqdm import tqdm
 
+
 # -----------------------------------------------------------------------------
 def imap_unordered_with_tqdm(
     fun: Callable, iterable: Iterable, n_cores: int = cpu_count(),
